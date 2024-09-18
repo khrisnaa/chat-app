@@ -57,19 +57,27 @@ export const AuthForm = () => {
       <div className="rounded-lg bg-white px-4 py-8 shadow-sm sm:px-10">
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           {variant === 'REGISTER' && (
-            <Input id="name" label="Name" register={register} errors={errors} />
+            <Input
+              id="name"
+              label="Name"
+              register={register}
+              errors={errors}
+              disabled={isLoading}
+            />
           )}
           <Input
             id="email"
             label="Email address"
             register={register}
             errors={errors}
+            disabled={isLoading}
           />
           <Input
             id="password"
             label="Password"
             register={register}
             errors={errors}
+            disabled={isLoading}
           />
           <div>
             <Button disabled={isLoading} type="submit" fullWidth>
