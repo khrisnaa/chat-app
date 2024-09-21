@@ -7,17 +7,17 @@ import bcrypt from 'bcryptjs';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(db),
   providers: [
     GitHub,
     Google,
     Credentials({
       credentials: {
-        email: { label: 'Email' },
-        password: { label: 'Password' },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         const { email, password } = credentials;
+
         if (!email || !password) {
           throw new Error('Invalid credentials');
         }
@@ -25,6 +25,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         const user = await db.user.findUnique({
           where: { email: String(email) },
         });
+
         if (!user || !user.password) {
           throw new Error('Invalid credentials');
         }
@@ -33,6 +34,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           String(password),
           user.password,
         );
+
         if (!passwordMatch) {
           throw new Error('Invalid credentials');
         }
@@ -41,8 +43,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  adapter: PrismaAdapter(db),
   pages: {
     signIn: '/',
+    signOut: '/',
   },
   session: {
     strategy: 'jwt',

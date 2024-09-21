@@ -3,14 +3,19 @@
 import { AuthSocialButton } from '@/app/(site)/components/auth-social-button';
 import { Button } from '@/app/components/button';
 import { Input } from '@/app/components/inputs/input';
+import axios from 'axios';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { FieldValues, useForm, SubmitHandler } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
-import { FcGoogle } from 'react-icons/fc';
 
 type Variant = 'LOGIN' | 'REGISTER';
 
 export const AuthForm = () => {
+  const router = useRouter();
+
   const [variant, setVariant] = useState<Variant>('LOGIN');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,22 +39,50 @@ export const AuthForm = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
-
     if (variant === 'REGISTER') {
-      //Axios register
+      axios
+        .post('/api/register', data)
+        .catch(() => toast.error('Something went wrong'))
+        .finally(() => setIsLoading(false));
     }
 
     if (variant === 'LOGIN') {
-      //Nextauth signin
+      signIn('credentials', {
+        ...data,
+        redirect: false,
+      })
+        .then((callback) => {
+          if (callback?.error) {
+            toast.error('Invalid credentials');
+          }
+
+          if (callback?.ok && !callback.error) {
+            toast.success('Logged In');
+          }
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
-  const socialAction = (action: string) => {
+  const socialAction = async (action: string) => {
     setIsLoading(true);
 
     //Nextauth social signin
+    signIn(action, {
+      redirect: false,
+    })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error('Invalid credentials');
+        }
+
+        if (callback?.ok && !callback.error) {
+          toast.success('Logged In');
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -75,6 +108,7 @@ export const AuthForm = () => {
           <Input
             id="password"
             label="Password"
+            type="password"
             register={register}
             errors={errors}
             disabled={isLoading}

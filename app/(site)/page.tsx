@@ -1,7 +1,12 @@
 import { AuthForm } from '@/app/(site)/components/auth-form';
+import { auth } from '@/auth';
 import Image from 'next/image';
 
-const Page = () => {
+const Page = async () => {
+  const session = await auth();
+
+  if (!session?.user) return null;
+
   return (
     <main className="flex min-h-full flex-col justify-center bg-gray-100 py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
