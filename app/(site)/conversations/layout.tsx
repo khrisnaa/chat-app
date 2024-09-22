@@ -1,13 +1,13 @@
-import { UserList } from '@/app/(site)/users/components/user-list';
-import { getUsers } from '@/app/actions/getUsers';
+import { ConversationList } from '@/app/(site)/conversations/components/conversation-list';
+import { getConversations } from '@/app/actions/getConversations';
 import { Sidebar } from '@/app/components/sidebar/sidebar';
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
-  const users = await getUsers();
+  const conversations = await getConversations();
   return (
     <Sidebar>
       <div className="h-full">
-        <UserList items={users} />
+        <ConversationList initialItems={conversations} />
         {children}
       </div>
     </Sidebar>
