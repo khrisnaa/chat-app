@@ -1,3 +1,5 @@
+'use server';
+
 import { db } from '@/app/libs/db';
 import { auth } from '@/auth';
 

@@ -1,3 +1,5 @@
+'use server';
+
 import { getCurrentUser } from '@/app/actions/getCurrentUser';
 import { db } from '@/app/libs/db';
 
