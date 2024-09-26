@@ -1,7 +1,7 @@
 import { auth as middleware } from '@/auth';
 import { NextResponse } from 'next/server';
 
-const protectedRoutes = ['/users'];
+const protectedRoutes = ['/users', '/conversations'];
 export default middleware((req) => {
   // req.auth
   const { nextUrl } = req;
