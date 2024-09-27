@@ -2,6 +2,7 @@
 
 import { ProfileDrawer } from '@/app/(site)/conversations/[conversationId]/components/profile-drawer';
 import { Avatar } from '@/app/components/avatar';
+import { AvatarGroup } from '@/app/components/avatar-group';
 import { useOtherUser } from '@/app/hooks/use-other-user';
 import { Conversation, User } from '@prisma/client';
 import Link from 'next/link';
@@ -43,7 +44,11 @@ export const Header = ({ conversation }: HeaderProps) => {
           >
             <HiChevronLeft size={32} />
           </Link>
-          <Avatar user={otherUser} />
+          {conversation.isGroup ? (
+            <AvatarGroup users={conversation.users} />
+          ) : (
+            <Avatar user={otherUser} />
+          )}
           <div className="flex flex-col">
             <div>{conversation.name || otherUser.name}</div>
             <div className="text-sm font-light text-neutral-500">
