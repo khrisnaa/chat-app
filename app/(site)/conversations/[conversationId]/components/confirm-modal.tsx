@@ -26,8 +26,8 @@ export const ConfirmModal = ({ onClose, isOpen }: ConfirmModalProps) => {
       .delete(`/api/conversations/${conversationId}`)
       .then(() => {
         onClose();
-        router.push('/conversations');
         router.refresh();
+        router.push('/conversations');
       })
       .catch(() => toast.error('Something went wrong'))
       .finally(() => setIsLoading(false));
