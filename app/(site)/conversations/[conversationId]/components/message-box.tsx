@@ -1,11 +1,13 @@
 'use client';
 
 import { MessageData } from '@/app/(site)/conversations/[conversationId]/components/body';
+import { ImageModal } from '@/app/(site)/conversations/[conversationId]/components/image-modal';
 import { Avatar } from '@/app/components/avatar';
 import { cn } from '@/app/libs/utils';
 import { format } from 'date-fns';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useState } from 'react';
 
 interface MessageBoxProps {
   data: MessageData;
@@ -14,6 +16,7 @@ interface MessageBoxProps {
 
 export const MessageBox = ({ data, isLast }: MessageBoxProps) => {
   const session = useSession();
+  const [imageModalOpen, setImageModalOpen] = useState(false);
 
   const isOwn = session?.data?.user?.email == data?.sender?.email;
   const seenList = (data.seen || [])
@@ -46,8 +49,14 @@ export const MessageBox = ({ data, isLast }: MessageBoxProps) => {
           </div>
         </div>
         <div className={message}>
+          <ImageModal
+            src={data.image}
+            isOpen={imageModalOpen}
+            onClose={() => setImageModalOpen(false)}
+          />
           {data.image ? (
             <Image
+              onClick={() => setImageModalOpen(true)}
               src={data.image}
               alt="image"
               height={280}
