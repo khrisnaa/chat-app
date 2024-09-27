@@ -1,5 +1,6 @@
 import { getCurrentUser } from '@/app/actions/getCurrentUser';
 import { db } from '@/app/libs/db';
+import { pusherServer } from '@/app/libs/pusher';
 import { NextResponse } from 'next/server';
 
 export const DELETE = async (
@@ -27,6 +28,16 @@ export const DELETE = async (
 
     const deletedConversation = await db.conversation.deleteMany({
       where: { id: conversationId, userIds: { hasSome: [currentUser.id] } },
+    });
+
+    existingConversation.users.forEach((user) => {
+      if (user.email) {
+        pusherServer.trigger(
+          user.email,
+          'conversation:remove',
+          existingConversation,
+        );
+      }
     });
 
     return NextResponse.json(deletedConversation);
